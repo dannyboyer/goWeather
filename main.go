@@ -35,15 +35,24 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 }
 
-type weatherData struct {
-	Name string `json:"name"`
-	Main struct {
-		Kelvin float64 `json:"temp"`
-	} `json:"main"`
-}
-
 type weatherProvider interface {
 	temperature(city string) (float64, error) //in Kelvin
+}
+
+type multiWeatherProvider []weatherProvider
+
+func (w multiWeatherProvider) temperature(city string) (float64, error) {
+	sum := 0.0
+
+	for _, provider := range w {
+		k, err := provider.temperature(city)
+		if err != nil {
+			return 0, err
+		}
+		sum += k
+	}
+
+	return sum / float64(len(w)), nil
 }
 
 type openWeatherMap struct{}
@@ -95,20 +104,4 @@ func (w weatherUnderground) temperature(city string) (float64, error) {
 	kelvin := d.Observation.Celcius + 273.15
 	log.Printf("weatherUnderground: %s :%.2f", city, kelvin)
 	return kelvin, nil
-}
-
-type multiWeatherProvider []weatherProvider
-
-func (w multiWeatherProvider) temperature(city string) (float64, error) {
-	sum := 0.0
-
-	for _, provider := range w {
-		k, err := provider.temperature(city)
-		if err != nil {
-			return 0, err
-		}
-		sum += k
-	}
-
-	return sum / float64(len(w)), nil
 }
