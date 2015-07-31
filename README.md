@@ -5,11 +5,11 @@ Returns the current temperature for a specific city, in kelvin.
 
 ## Installation
 
-go get https://github.com/dannyboyer/goWebServer.git
+go get github.com/dannyboyer/goWeather
 
 ## Usage
 
-./goWebServer
+goWeather
 curl localhost:8080/weather/montreal
 
 Based on a [tutorial](http://howistart.org/posts/go/1) by Peter Bourgon
