@@ -1,4 +1,4 @@
-# goWebServer
+# goWeather
 
 A small weather API written in Go.
 Returns the current temperature for a specific city, in kelvin.
